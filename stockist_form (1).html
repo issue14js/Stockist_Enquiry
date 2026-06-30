@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stockist Enquiry Form</title>
+<style>
+  :root{
+    --ink:#1c2b2d;
+    --paper:#fbfaf6;
+    --line:#d8d2c2;
+    --accent:#a8531e;
+    --accent-soft:#f1e3d3;
+    --green:#2f5d50;
+    --muted:#6b6357;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Segoe UI', system-ui, -apple-system, sans-serif;
+    line-height:1.4;
+    padding-bottom:60px;
+  }
+  header{
+    background:var(--green);
+    color:#fff;
+    padding:22px 18px 18px;
+    position:sticky;
+    top:0;
+    z-index:5;
+    box-shadow:0 2px 6px rgba(0,0,0,0.15);
+  }
+  header h1{
+    margin:0 0 4px;
+    font-size:1.25rem;
+    letter-spacing:0.3px;
+  }
+  header p{
+    margin:0;
+    font-size:0.85rem;
+    opacity:0.85;
+  }
+  .wrap{
+    max-width:720px;
+    margin:0 auto;
+    padding:0 16px;
+  }
+  .section{
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:10px;
+    margin-top:18px;
+    padding:16px 16px 18px;
+  }
+  .section h2{
+    font-size:1rem;
+    margin:0 0 12px;
+    color:var(--accent);
+    border-bottom:2px solid var(--accent-soft);
+    padding-bottom:8px;
+  }
+  label{
+    display:block;
+    font-size:0.85rem;
+    font-weight:600;
+    margin-bottom:4px;
+    color:var(--ink);
+  }
+  input[type=text], input[type=tel], textarea, select{
+    width:100%;
+    padding:9px 10px;
+    border:1px solid var(--line);
+    border-radius:6px;
+    font-size:0.95rem;
+    background:#fffefb;
+    color:var(--ink);
+    margin-bottom:12px;
+    font-family:inherit;
+  }
+  textarea{resize:vertical; min-height:60px;}
+  .field-row{display:flex; gap:10px; flex-wrap:wrap;}
+  .field-row > div{flex:1 1 140px;}
+  .chip-group{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    margin-bottom:10px;
+  }
+  .chip{
+    border:1px solid var(--line);
+    border-radius:20px;
+    padding:7px 14px;
+    font-size:0.85rem;
+    cursor:pointer;
+    background:#fff;
+    user-select:none;
+    transition:0.15s;
+  }
+  .chip input{display:none;}
+  .chip.checked{
+    background:var(--accent);
+    border-color:var(--accent);
+    color:#fff;
+  }
+  .other-box{
+    display:none;
+    margin-top:-4px;
+  }
+  .other-box.show{display:block;}
+  .product-table{
+    width:100%;
+    border-collapse:collapse;
+    font-size:0.85rem;
+  }
+  .product-table th{
+    text-align:left;
+    font-size:0.72rem;
+    text-transform:uppercase;
+    letter-spacing:0.4px;
+    color:var(--muted);
+    border-bottom:1px solid var(--line);
+    padding:6px 4px;
+  }
+  .product-row td{
+    border-bottom:1px solid #eee6d8;
+    padding:7px 4px;
+    vertical-align:middle;
+  }
+  .product-row:hover{background:#fbf6ec;}
+  .pname{
+    font-size:0.85rem;
+  }
+  .pname .num{color:var(--muted); font-weight:600; margin-right:4px;}
+  .avail-toggle{
+    display:flex; gap:4px;
+  }
+  .avail-btn{
+    border:1px solid var(--line);
+    background:#fff;
+    border-radius:6px;
+    padding:4px 9px;
+    font-size:0.78rem;
+    cursor:pointer;
+  }
+  .avail-btn.yes.active{background:#2f5d50; color:#fff; border-color:#2f5d50;}
+  .avail-btn.no.active{background:#b7472a; color:#fff; border-color:#b7472a;}
+  select.discount-select{
+    margin:0;
+    padding:5px 6px;
+    font-size:0.8rem;
+    min-width:90px;
+  }
+  .disc-row{display:none; align-items:center; gap:4px;}
+  .disc-row.show{display:flex;}
+  .disc-other{display:none; width:70px; margin:0 0 0 4px; padding:5px 6px; font-size:0.8rem;}
+  .disc-other.show{display:inline-block;}
+  .search-bar{
+    width:100%;
+    padding:9px 10px;
+    border:1px solid var(--line);
+    border-radius:6px;
+    margin-bottom:10px;
+    font-size:0.9rem;
+  }
+  .filter-bar{
+    display:flex;
+    gap:8px;
+    margin-bottom:10px;
+    font-size:0.78rem;
+  }
+  .filter-bar button{
+    border:1px solid var(--line);
+    background:#fff;
+    border-radius:6px;
+    padding:5px 10px;
+    cursor:pointer;
+    font-size:0.78rem;
+  }
+  .radio-group{display:flex; flex-wrap:wrap; gap:8px;}
+  .radio-chip{
+    border:1px solid var(--line);
+    border-radius:20px;
+    padding:7px 14px;
+    font-size:0.85rem;
+    cursor:pointer;
+    background:#fff;
+  }
+  .radio-chip input{display:none;}
+  .radio-chip.checked{background:var(--green); border-color:var(--green); color:#fff;}
+  .submit-bar{
+    position:sticky;
+    bottom:0;
+    background:linear-gradient(to top, var(--paper) 70%, transparent);
+    padding:16px;
+    text-align:center;
+  }
+  button.submit-btn{
+    background:var(--accent);
+    color:#fff;
+    border:none;
+    padding:13px 32px;
+    border-radius:30px;
+    font-size:1rem;
+    font-weight:600;
+    cursor:pointer;
+    box-shadow:0 3px 10px rgba(168,83,30,0.35);
+  }
+  button.submit-btn:active{transform:scale(0.98);}
+  .hint{font-size:0.75rem; color:var(--muted); margin-top:-6px; margin-bottom:10px;}
+  .summary{
+    display:none;
+    white-space:pre-wrap;
+    background:#fbf6ec;
+    border:1px solid var(--line);
+    border-radius:8px;
+    padding:12px;
+    font-size:0.82rem;
+    margin-top:14px;
+    max-height:320px;
+    overflow:auto;
+  }
+  .summary.show{display:block;}
+  .download-btn{
+    display:none;
+    margin-top:10px;
+    background:var(--green);
+    color:#fff;
+    border:none;
+    padding:9px 18px;
+    border-radius:20px;
+    font-size:0.85rem;
+    cursor:pointer;
+  }
+  .download-btn.show{display:inline-block;}
+  .count-badge{
+    font-size:0.75rem;
+    color:var(--muted);
+    font-weight:500;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Stockist Enquiry Form</h1>
+  <p> Surgical Supplies — Availability, Discount & Delivery</p>
+</header>
+
+<div class="wrap">
+
+  <!-- SECTION 1: Stockist Details -->
+  <div class="section">
+    <h2>1. Stockist Details</h2>
+    <div class="field-row">
+      <div>
+        <label for="sName">Stockist Name *</label>
+        <input type="text" id="sName" placeholder="Full name / firm name">
+      </div>
+      <div>
+        <label for="sPhone">Contact Number *</label>
+        <input type="tel" id="sPhone" placeholder="10-digit mobile number">
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 2: Companies -->
+  <div class="section">
+    <h2>2. Companies You Deal In</h2>
+    <div class="chip-group" id="companyGroup">
+      <label class="chip"><input type="checkbox" value="Romsons">Romsons</label>
+      <label class="chip"><input type="checkbox" value="Dispovan">Dispovan</label>
+      <label class="chip"><input type="checkbox" value="Polymed">Polymed</label>
+      <label class="chip"><input type="checkbox" value="Portex">Portex</label>
+      <label class="chip"><input type="checkbox" value="Dr. Odin">Dr. Odin</label>
+      <label class="chip"><input type="checkbox" value="Safe Touch">Safe Touch</label>
+      <label class="chip"><input type="checkbox" value="Vision">Vision</label>
+      <label class="chip"><input type="checkbox" value="Other" id="companyOtherChk">Other</label>
+    </div>
+    <div class="other-box" id="companyOtherBox">
+      <input type="text" id="companyOtherText" placeholder="Type other company name(s)">
+    </div>
+  </div>
+
+  <!-- SECTION 3: Products -->
+  <div class="section">
+    <h2>3. Product Availability, Discount & Delivery</h2>
+    <p class="hint">Mark each item Yes/No. For "Yes" items, choose a discount %. Items left unmarked are treated as not available.</p>
+    <input type="text" class="search-bar" id="productSearch" placeholder="🔍 Search product (e.g. syringe, gloves...)">
+    <div class="filter-bar">
+      <button type="button" id="markAllYes">Mark all visible as Available</button>
+      <button type="button" id="clearAll">Clear all</button>
+      <span class="count-badge" id="availCount">0 marked available</span>
+    </div>
+    <table class="product-table">
+      <thead>
+        <tr><th style="width:38%">Product</th><th style="width:24%">Available?</th><th>Discount %</th></tr>
+      </thead>
+      <tbody id="productBody"></tbody>
+    </table>
+  </div>
+
+  <!-- SECTION 4: Delivery Time -->
+  <div class="section">
+    <h2>4. Order Delivery Time</h2>
+    <div class="radio-group" id="deliveryGroup">
+      <label class="radio-chip"><input type="radio" name="delivery" value="30 minutes">30 minutes</label>
+      <label class="radio-chip"><input type="radio" name="delivery" value="1 hour">1 hour</label>
+      <label class="radio-chip"><input type="radio" name="delivery" value="5 hours">5 hours</label>
+      <label class="radio-chip"><input type="radio" name="delivery" value="1 day">1 day</label>
+      <label class="radio-chip"><input type="radio" name="delivery" value="Other" id="deliveryOtherChk">Other</label>
+    </div>
+    <div class="other-box" id="deliveryOtherBox">
+      <input type="text" id="deliveryOtherText" placeholder="Specify delivery time">
+    </div>
+  </div>
+
+  <!-- SECTION 5: Suggestions -->
+  <div class="section">
+    <h2>5. Suggestions (optional)</h2>
+    <label for="suggestions">Any other company or product you'd like to suggest?</label>
+    <textarea id="suggestions" placeholder="Type suggestions here..."></textarea>
+  </div>
+
+  <div id="summaryBox" class="summary"></div>
+  <button class="download-btn" id="downloadBtn">⬇ Download as Text File</button>
+
+</div>
+
+<div class="submit-bar">
+  <button class="submit-btn" id="submitBtn">Submit Form</button>
+</div>
+
+<script>
+// PASTE your Google Apps Script Web App URL here (Step 2 in setup instructions)
+const GOOGLE_SHEET_WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbzjhmKN5n5jrQ_15UhWLvNwbCyCWtCp1PDqmmyVphizDTygQZ_KhkTNIlRvFB7qVkwE/exec";
+
+const products = [
+"WATER FOR INJECTION","ELECTRODES","SYRINGE 50 ML","SYRINGE 20 ML","SYRINGE 10 ML","SYRINGE 05 ML",
+"SYRINGE 2 ML","DYNAPLAST (6\")","NASAL CANULA ADULT","NEBULISATION MASK ADULT","NEBULISATION T-PIECE",
+"O2 FACE MASK ADULT","MICRO DRIP SET","IV SET","RYLES TUBE 14 & 16","RECOVERY KIT ADULT","DURAPORE (1\")",
+"ET TUBE 6,6.5,7,7.5,8,8.5","EXTRA BATTERY","GALLANT BLADE","LARYNGOSCOPE ADULT","LOX JELLY 2%",
+"MAGILLS FORCEP","MASK","MUCUS EXTRACTOR","SCISSOR","STYLATE ADULT","SUCTION CATHETER 12,16",
+"SURGICAL GLOVE 6,6.5,7,7.5","UNSTERILE GLOVES","VACCU SUCTION SET","CATHETOR MOUNT","HANDCARE",
+"VAINFLON 18,20,22","HME FILTER (ADULT)","NASOPHARINGEAL AIRWAY","OROPHARINGEAL AIRWAY",
+"ROLLER BANDAGE 6\"","WEARON","BAIN CIRCUITE (ADULT)","VENTILATOR CIRCUIT","AMBU BAG","BOUGIE",
+"NS 500ML","NS 100ML","DNS 500ML","DEXTROSE 5% 500ML","RL 500ML","DEXTROSE 25%","PM-O-LINE",
+"VEIN O LINE","IV STERIFLOW","UROMETER/UROBAG","FOLLYE'S CATHETOR 14,16","INSULINE SYRINGE",
+"GYPSOPLAST (10cm*4/6m)","EASY GLIDE","EASY FIX","GYPSOPLAST (10cm*1m)","BP BLADE 11,15,22",
+"MICROPORE","DREP SHEET","NEEDLE 18,26 NO","BEDPAN","URINAL","BETADINE 10% 500ML","BETADINE 7.5% 500ML",
+"BIB FORT","DEFIBRILLATOR PAPER","VICRYL(3-0)","VICRYL(2-0)","VICRYL(0)","MERSILK(2-0)","ETHILON(2-0)",
+"ECG JELLY","ECG ELECTRODES","C-ARM COVER"
+];
+
+const tbody = document.getElementById('productBody');
+products.forEach((name, i) => {
+  const tr = document.createElement('tr');
+  tr.className = 'product-row';
+  tr.dataset.name = name.toLowerCase();
+  tr.innerHTML = `
+    <td class="pname"><span class="num">${i+1}.</span>${name}</td>
+    <td>
+      <div class="avail-toggle">
+        <button type="button" class="avail-btn yes" data-idx="${i}">Yes</button>
+        <button type="button" class="avail-btn no" data-idx="${i}">No</button>
+      </div>
+    </td>
+    <td>
+      <div class="disc-row" id="discRow${i}">
+        <select class="discount-select" id="discSel${i}">
+          <option value="">Select %</option>
+          <option value="40">40%</option>
+          <option value="45">45%</option>
+          <option value="47">47%</option>
+          <option value="50">50%</option>
+          <option value="55">55%</option>
+          <option value="Other">Other</option>
+        </select>
+        <input type="text" class="disc-other" id="discOther${i}" placeholder="%">
+      </div>
+    </td>
+  `;
+  tbody.appendChild(tr);
+});
+
+function updateCount(){
+  const yes = document.querySelectorAll('.avail-btn.yes.active').length;
+  document.getElementById('availCount').textContent = yes + " marked available";
+}
+
+tbody.addEventListener('click', (e) => {
+  const btn = e.target.closest('.avail-btn');
+  if(!btn) return;
+  const idx = btn.dataset.idx;
+  const row = btn.closest('tr');
+  const yesBtn = row.querySelector('.avail-btn.yes');
+  const noBtn = row.querySelector('.avail-btn.no');
+  const discRow = document.getElementById('discRow'+idx);
+  if(btn.classList.contains('yes')){
+    yesBtn.classList.add('active');
+    noBtn.classList.remove('active');
+    discRow.classList.add('show');
+  } else {
+    noBtn.classList.add('active');
+    yesBtn.classList.remove('active');
+    discRow.classList.remove('show');
+  }
+  updateCount();
+});
+
+tbody.addEventListener('change', (e) => {
+  if(e.target.classList.contains('discount-select')){
+    const idx = e.target.id.replace('discSel','');
+    const otherInput = document.getElementById('discOther'+idx);
+    if(e.target.value === 'Other'){
+      otherInput.classList.add('show');
+    } else {
+      otherInput.classList.remove('show');
+    }
+  }
+});
+
+document.getElementById('markAllYes').addEventListener('click', () => {
+  document.querySelectorAll('.product-row').forEach(row => {
+    if(row.style.display === 'none') return;
+    row.querySelector('.avail-btn.yes').click();
+  });
+});
+document.getElementById('clearAll').addEventListener('click', () => {
+  document.querySelectorAll('.product-row').forEach(row => {
+    row.querySelector('.avail-btn.yes').classList.remove('active');
+    row.querySelector('.avail-btn.no').classList.remove('active');
+    row.querySelector('.disc-row').classList.remove('show');
+  });
+  updateCount();
+});
+
+document.getElementById('productSearch').addEventListener('input', (e) => {
+  const q = e.target.value.toLowerCase();
+  document.querySelectorAll('.product-row').forEach(row => {
+    row.style.display = row.dataset.name.includes(q) ? '' : 'none';
+  });
+});
+
+// Company chips
+document.querySelectorAll('#companyGroup .chip input').forEach(inp => {
+  inp.addEventListener('change', () => {
+    inp.closest('.chip').classList.toggle('checked', inp.checked);
+    if(inp.id === 'companyOtherChk'){
+      document.getElementById('companyOtherBox').classList.toggle('show', inp.checked);
+    }
+  });
+});
+
+// Delivery radio chips
+document.querySelectorAll('#deliveryGroup .radio-chip input').forEach(inp => {
+  inp.addEventListener('change', () => {
+    document.querySelectorAll('#deliveryGroup .radio-chip').forEach(c => c.classList.remove('checked'));
+    inp.closest('.radio-chip').classList.add('checked');
+    document.getElementById('deliveryOtherBox').classList.toggle('show', inp.id === 'deliveryOtherChk' && inp.checked);
+  });
+});
+
+let lastSummary = "";
+
+document.getElementById('submitBtn').addEventListener('click', () => {
+  const name = document.getElementById('sName').value.trim();
+  const phone = document.getElementById('sPhone').value.trim();
+
+  if(!name || !phone){
+    alert("Kripya Stockist Name aur Contact Number bharein.");
+    return;
+  }
+
+  const companies = [];
+  document.querySelectorAll('#companyGroup .chip input:checked').forEach(c => {
+    if(c.id === 'companyOtherChk'){
+      const t = document.getElementById('companyOtherText').value.trim();
+      if(t) companies.push(t);
+    } else {
+      companies.push(c.value);
+    }
+  });
+
+  let deliveryVal = "";
+  const deliveryChecked = document.querySelector('#deliveryGroup input:checked');
+  if(deliveryChecked){
+    deliveryVal = deliveryChecked.id === 'deliveryOtherChk'
+      ? document.getElementById('deliveryOtherText').value.trim()
+      : deliveryChecked.value;
+  }
+
+  const availableItems = [];
+  products.forEach((p, i) => {
+    const yesBtn = document.querySelector(`.avail-btn.yes[data-idx="${i}"]`);
+    if(yesBtn.classList.contains('active')){
+      const sel = document.getElementById('discSel'+i).value;
+      const otherVal = document.getElementById('discOther'+i).value.trim();
+      const discount = sel === 'Other' ? (otherVal || 'Not specified') : (sel || 'Not specified');
+      availableItems.push(`  ${i+1}. ${p} — Discount: ${discount}%`);
+    }
+  });
+
+  const suggestions = document.getElementById('suggestions').value.trim();
+
+  let summary = `STOCKIST PRODUCT ENQUIRY — SUBMISSION SUMMARY\n`;
+  summary += `${'='.repeat(48)}\n\n`;
+  summary += `Stockist Name : ${name}\n`;
+  summary += `Contact Number: ${phone}\n`;
+  summary += `Companies     : ${companies.length ? companies.join(', ') : 'None selected'}\n`;
+  summary += `Delivery Time : ${deliveryVal || 'Not selected'}\n\n`;
+  summary += `Available Products (${availableItems.length}/${products.length}):\n`;
+  summary += availableItems.length ? availableItems.join('\n') : '  None marked available';
+  summary += `\n\nSuggestions: ${suggestions || 'None'}\n`;
+
+  lastSummary = summary;
+  const box = document.getElementById('summaryBox');
+  box.textContent = summary;
+  box.classList.add('show');
+  document.getElementById('downloadBtn').classList.add('show');
+  box.scrollIntoView({behavior:'smooth'});
+
+  // Send data to Google Sheet dashboard
+  const submitBtnEl = document.getElementById('submitBtn');
+  const originalBtnText = submitBtnEl.textContent;
+  submitBtnEl.textContent = "Sending...";
+  submitBtnEl.disabled = true;
+
+  const payload = {
+    name: name,
+    phone: phone,
+    companies: companies.join(', ') || 'None selected',
+    delivery: deliveryVal || 'Not selected',
+    availableCount: availableItems.length,
+    totalCount: products.length,
+    availableItems: availableItems.map(s => s.trim()).join(' | '),
+    suggestions: suggestions || 'None',
+    timestamp: new Date().toLocaleString()
+  };
+
+  fetch(GOOGLE_SHEET_WEBHOOK_URL, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: { 'Content-Type': 'text/plain' },
+    body: JSON.stringify(payload)
+  })
+  .then(() => {
+    submitBtnEl.textContent = "✓ Submitted to Dashboard";
+  })
+  .catch(() => {
+    submitBtnEl.textContent = "⚠ Saved locally (dashboard send failed)";
+  })
+  .finally(() => {
+    setTimeout(() => {
+      submitBtnEl.textContent = originalBtnText;
+      submitBtnEl.disabled = false;
+    }, 3000);
+  });
+});
+
+document.getElementById('downloadBtn').addEventListener('click', () => {
+  if(!lastSummary) return;
+  const blob = new Blob([lastSummary], {type:'text/plain'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  const name = document.getElementById('sName').value.trim().replace(/\s+/g,'_') || 'stockist';
+  a.download = `enquiry_${name}.txt`;
+  a.click();
+  URL.revokeObjectURL(url);
+});
+</script>
+
+</body>
+</html>
